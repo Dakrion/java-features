@@ -1,11 +1,10 @@
 import app.Calculator;
 import exceptions.DivisionByZeroException;
-import exceptions.InputException;
 import exceptions.WrongOperatorException;
 
 @SuppressWarnings("InfiniteLoopStatement")
 public class Application {
-    public static void main(String[] args) throws InputException, WrongOperatorException, DivisionByZeroException {
+    public static void main(String[] args) throws WrongOperatorException, DivisionByZeroException {
         Calculator calculator = new Calculator();
 
         while (true) {

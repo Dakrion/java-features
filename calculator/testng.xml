@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Calculator Tests">
+    <test name="positive_tests_for_operations">
+        <classes>
+            <class name="parameterized.OperationsTests"/>
+        </classes>
+    </test>
+    <test name="exception_tests">
+        <classes>
+            <class name="single.ExceptionTests"/>
+        </classes>
+    </test>
+</suite>

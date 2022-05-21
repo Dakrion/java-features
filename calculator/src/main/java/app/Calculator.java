@@ -21,6 +21,7 @@ public class Calculator {
             operations = new Operations(num1, num2);
         } catch (InputMismatchException ex) {
             System.out.println("Допустим ввод только чисел");
+            innerNum();
         }
     }
 

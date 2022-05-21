@@ -1,6 +1,6 @@
 package operations;
 
-import exceptions.InputException;
+import exceptions.DivisionByZeroException;
 import exceptions.WrongOperatorException;
 
 public class Operations {
@@ -24,9 +24,9 @@ public class Operations {
             case "/":
                 if (num2 != 0) {
                     return num1 / num2;
-                } else throw new WrongOperatorException("На ноль делить нельзя!");
+                } else throw new DivisionByZeroException("На ноль делить нельзя!");
             default:
-                 throw new InputException("Такой операции не существует");
+                 throw new WrongOperatorException("Такой операции не существует!");
         }
     }
 }
