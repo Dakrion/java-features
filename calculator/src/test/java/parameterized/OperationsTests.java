@@ -4,6 +4,7 @@ import operations.Operations;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@SuppressWarnings("all")
 public class OperationsTests {
 
     private Operations operations;
