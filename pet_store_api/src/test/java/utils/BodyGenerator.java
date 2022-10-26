@@ -2,7 +2,9 @@ package utils;
 
 import com.github.javafaker.Faker;
 import dto.request.PetModel;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class BodyGenerator {
 
     private static final Faker faker = new Faker();

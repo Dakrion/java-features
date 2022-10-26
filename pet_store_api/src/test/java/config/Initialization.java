@@ -12,6 +12,9 @@ import org.junit.jupiter.api.TestInstance;
 import restclient.PetApi;
 import restclient.PetClient;
 
+/**
+ * Base setup before run tests
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Initialization {
 

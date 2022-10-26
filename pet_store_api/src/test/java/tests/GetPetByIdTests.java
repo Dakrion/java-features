@@ -79,6 +79,10 @@ public class GetPetByIdTests extends Initialization {
                 });
     }
 
+    /**
+     * provider for this test-class.
+     * @return List
+     */
     @Provider(testMode = Provider.TestMode.POSITIVE)
     static List<PetModel> getDataFromJsonFile() {
         try {
