@@ -1,0 +1,36 @@
+﻿[{
+  "id": 1187815,
+  "category": {
+    "id": 1,
+    "name": "category"
+  },
+  "name": "Вася",
+  "photoUrls": [
+    "https://example.com"
+  ],
+  "tags": [
+    {
+      "id": 2,
+      "name": "tags"
+    }
+  ],
+  "status": "available"
+},
+  {
+    "id": 832138,
+    "category": {
+      "id": 1,
+      "name": "category"
+    },
+    "name": "Вася",
+    "photoUrls": [
+      "https://example.com"
+    ],
+    "tags": [
+      {
+        "id": 2,
+        "name": "tags"
+      }
+    ],
+    "status": "available"
+  }]
