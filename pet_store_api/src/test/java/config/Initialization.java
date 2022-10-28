@@ -22,8 +22,6 @@ public class Initialization {
 
     protected PetApi petApi;
 
-    protected static ObjectMapper objectMapper;
-
     @BeforeAll
     public void setup() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -36,6 +34,5 @@ public class Initialization {
                 .build();
 
         petApi = new PetClient(requestSpecification);
-        objectMapper = new ObjectMapper();
     }
 }

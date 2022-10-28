@@ -61,7 +61,7 @@ public class GetPetByIdTests extends Initialization {
 
     @ParameterizedTest(name = "{displayName} - {index}")
     @DisplayName("Получение животного из json-файла")
-    @MethodSource("getDataFromJsonFile")
+    @MethodSource("tests.dataproviders.DataProviders#get_pet_from_json")
     void get_pet_from_json(PetModel model) {
         PetModel response = petApi.getPet(model.getId().intValue())
                 .printResponseToConsole()
@@ -77,20 +77,5 @@ public class GetPetByIdTests extends Initialization {
                     softly.assertThat(response.getStatus()).withFailMessage("Status <%s> is not equal to <%s>", response.getStatus(), createPetBody.getStatus())
                             .isEqualTo(createPetBody.getStatus());
                 });
-    }
-
-    /**
-     * provider for this test-class.
-     * @return List
-     */
-    @Provider(testMode = Provider.TestMode.POSITIVE)
-    static List<PetModel> getDataFromJsonFile() {
-        try {
-            return objectMapper.readValue(new File("src/test/resources/data.json"), new TypeReference<>() {});
-        } catch (IOException ex) {
-            System.out.println("File with this path or name not found!");
-            ex.printStackTrace();
-        }
-        throw new NullPointerException("List is null!");
     }
 }

@@ -13,10 +13,16 @@ import java.lang.annotation.Target;
 public @interface Provider {
 
     /**
-     * name of test suite
+     * name of test method, which use this provider
      * @return String
      */
-    String suite() default "";
+    String testMethod() default "";
+
+    /**
+     * name of test class, which use this provider
+     * @return String
+     */
+    String testClass() default "";
 
     /**
      * variants of tests - positive, negative, unknown
