@@ -1,6 +1,6 @@
 package config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import restclient.PetApi;
 import restclient.PetClient;
+
+import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 
 /**
  * Base setup before run tests
@@ -24,6 +26,14 @@ public class Initialization {
 
     @BeforeAll
     public void setup() {
+        allureEnvironmentWriter(
+                ImmutableMap.<String, String>builder()
+                        .put("Version api", "v2")
+                        .put("Stand", "Stage")
+                        .put("URL", config.petBaseUrl())
+                        .build(),
+                        "build/allure-results/");
+
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
         final RequestSpecification requestSpecification = new RequestSpecBuilder()

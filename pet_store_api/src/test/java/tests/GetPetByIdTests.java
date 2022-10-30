@@ -1,6 +1,5 @@
 package tests;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import config.Initialization;
 import dto.request.PetModel;
 import io.qameta.allure.Epic;
@@ -12,24 +11,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import utils.ResponseWrapper;
-import utils.annotations.helper.Provider;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static utils.BodyGenerator.petObject;
 
 @Epic("PetStore")
 @Story("Pet")
 public class GetPetByIdTests extends Initialization {
 
-    private Integer petId;
+    private Long petId;
 
     private PetModel createPetBody;
 
     @BeforeEach
-    void createPet() {
+    void create_pet() {
         createPetBody = petObject();
 
         PetModel response = petApi.createPet(createPetBody)
@@ -37,7 +34,7 @@ public class GetPetByIdTests extends Initialization {
                 .assertStatusCode(HttpStatus.SC_OK)
                 .as(PetModel.class);
 
-        petId = response.getId().intValue();
+        petId = response.getId();
     }
 
     @Test
@@ -56,14 +53,27 @@ public class GetPetByIdTests extends Initialization {
                             .isEqualTo(createPetBody.getName());
                     softly.assertThat(response.getStatus()).withFailMessage("Status <%s> is not equal to <%s>", response.getStatus(), createPetBody.getStatus())
                             .isEqualTo(createPetBody.getStatus());
+                    softly.assertThat(response.getCategory().getName())
+                            .withFailMessage("Category name <%s> is not equal to <%s>", response.getCategory().getName(), createPetBody.getCategory().getName())
+                            .isEqualTo(createPetBody.getCategory().getName());
+                    softly.assertThat(response.getCategory().getId())
+                            .withFailMessage("Category id <%s> is not equal to <%s>", response.getCategory().getId(), createPetBody.getCategory().getId())
+                            .isEqualTo(createPetBody.getCategory().getId());
+                    softly.assertThat(response.getTags()).withFailMessage("Not find expected tags!").extracting("name", "id").asList().filteredOnAssertions(x -> {
+                        assertThat(x).as("name").hasFieldOrPropertyWithValue("name", createPetBody.getTags().stream().map(PetModel.TagsItem::getName).collect(Collectors.toList()));
+                        assertThat(x).as("id").hasFieldOrPropertyWithValue("id", createPetBody.getTags().stream().map(PetModel.TagsItem::getId).collect(Collectors.toList()));
+                    });
                 });
+
+        petApi.deletePet(petId)
+                .assertStatusCode(HttpStatus.SC_OK);
     }
 
     @ParameterizedTest(name = "{displayName} - {index}")
     @DisplayName("Получение животного из json-файла")
     @MethodSource("tests.dataproviders.DataProviders#get_pet_from_json")
     void get_pet_from_json(PetModel model) {
-        PetModel response = petApi.getPet(model.getId().intValue())
+        PetModel response = petApi.getPet(model.getId())
                 .printResponseToConsole()
                 .assertStatusCode(HttpStatus.SC_OK)
                 .as(PetModel.class);
@@ -76,6 +86,16 @@ public class GetPetByIdTests extends Initialization {
                             .isEqualTo(createPetBody.getName());
                     softly.assertThat(response.getStatus()).withFailMessage("Status <%s> is not equal to <%s>", response.getStatus(), createPetBody.getStatus())
                             .isEqualTo(createPetBody.getStatus());
+                    softly.assertThat(response.getCategory().getName())
+                            .withFailMessage("Category name <%s> is not equal to <%s>", response.getCategory().getName(), createPetBody.getCategory().getName())
+                            .isEqualTo(createPetBody.getCategory().getName());
+                    softly.assertThat(response.getCategory().getId())
+                            .withFailMessage("Category id <%s> is not equal to <%s>", response.getCategory().getId(), createPetBody.getCategory().getId())
+                            .isEqualTo(createPetBody.getCategory().getId());
+                    softly.assertThat(response.getTags()).withFailMessage("Not find expected tags!").extracting("name", "id").asList().filteredOnAssertions(x -> {
+                        assertThat(x).as("name").hasFieldOrPropertyWithValue("name", createPetBody.getTags().stream().map(PetModel.TagsItem::getName).collect(Collectors.toList()));
+                        assertThat(x).as("id").hasFieldOrPropertyWithValue("id", createPetBody.getTags().stream().map(PetModel.TagsItem::getId).collect(Collectors.toList()));
+                    });
                 });
     }
 }

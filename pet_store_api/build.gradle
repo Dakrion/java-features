@@ -59,6 +59,10 @@ dependencies {
     runtimeOnly 'org.aspectj:aspectjweaver:1.9.9.1'
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    testImplementation 'commons-codec:commons-codec:1.15'
+
+    implementation 'com.github.automatedowl:allure-environment-writer:1.0.0'
 }
 
 test {

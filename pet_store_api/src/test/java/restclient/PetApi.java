@@ -2,6 +2,7 @@ package restclient;
 
 import utils.ResponseWrapper;
 import utils.annotations.helper.Service;
+import utils.annotations.restspec.DELETE;
 import utils.annotations.restspec.GET;
 import utils.annotations.restspec.POST;
 
@@ -12,8 +13,11 @@ import utils.annotations.restspec.POST;
 public interface PetApi {
 
     @GET(endpoint = "/pet/{petId}")
-    ResponseWrapper getPet(Integer petId);
+    ResponseWrapper getPet(Long petId);
 
     @POST(endpoint = "/pet")
     <T> ResponseWrapper createPet(T body);
+
+    @DELETE(endpoint = "/pet/{petId}")
+    ResponseWrapper deletePet(Long petId);
 }
