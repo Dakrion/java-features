@@ -4,6 +4,9 @@ import com.github.javafaker.Faker;
 import dto.request.PetModel;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Class to generate response body for requests
+ */
 @UtilityClass
 public class BodyGenerator {
 

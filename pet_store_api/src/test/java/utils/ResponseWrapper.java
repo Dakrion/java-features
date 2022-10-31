@@ -10,6 +10,9 @@ import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Contains rest assured response and most needed methods
+ */
 @RequiredArgsConstructor
 public class ResponseWrapper {
 

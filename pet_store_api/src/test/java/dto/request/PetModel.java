@@ -2,58 +2,58 @@ package dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PetModel {
 
 	@Builder.Default
-	private List<String> photoUrls = List.of("https://example.com");
+	List<String> photoUrls = List.of("https://example.com");
 
 	@Builder.Default
-	private String name = "Вася";
+	String name = "Вася";
 
 	@Builder.Default
-	private Long id = 12345L;
+	Long id = 12345L;
 
 	@Builder.Default
-	private Category category = Category.builder().build();
+	Category category = Category.builder().build();
 
 	@Builder.Default
-	private List<TagsItem> tags = List.of(TagsItem.builder().build());
+	List<TagsItem> tags = List.of(TagsItem.builder().build());
 
 	@Builder.Default
-	private String status = "available";
+	String status = "available";
 
-	@Data
+	@Value
 	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class Category {
 
 		@Builder.Default
-		private String name = "category";
+		String name = "category";
 
 		@Builder.Default
-		private int id = 1;
+		int id = 1;
 	}
 
-	@Data
+	@Value
 	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class TagsItem {
 
 		@Builder.Default
-		private String name = "tags";
+		String name = "tags";
 
 		@Builder.Default
-		private int id = 2;
+		int id = 2;
 	}
 }

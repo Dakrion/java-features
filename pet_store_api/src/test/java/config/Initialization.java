@@ -24,6 +24,10 @@ public class Initialization {
 
     protected PetApi petApi;
 
+    /**
+     * Setup execute before execute test-suites.
+     * Contains allureEnvironmentWriter for add environment to allure report, requestSpecification and service api realization
+     */
     @BeforeAll
     public void setup() {
         allureEnvironmentWriter(

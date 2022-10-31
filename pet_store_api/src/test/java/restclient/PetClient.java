@@ -13,6 +13,9 @@ import java.lang.reflect.Method;
 
 import static io.restassured.RestAssured.given;
 
+/**
+ * Service api realization
+ */
 @RequiredArgsConstructor
 public class PetClient implements PetApi {
 
