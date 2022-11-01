@@ -1,4 +1,4 @@
-package dto.request;
+package dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package tests;
 
 import config.Initialization;
-import dto.request.PetModel;
+import dto.PetModel;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
 import org.apache.http.HttpStatus;

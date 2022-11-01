@@ -2,7 +2,7 @@ package tests.dataproviders;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dto.request.PetModel;
+import dto.PetModel;
 import lombok.experimental.UtilityClass;
 import utils.annotations.helper.Provider;
 

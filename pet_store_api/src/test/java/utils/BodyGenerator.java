@@ -1,7 +1,7 @@
 package utils;
 
 import com.github.javafaker.Faker;
-import dto.request.PetModel;
+import dto.PetModel;
 import lombok.experimental.UtilityClass;
 
 /**
