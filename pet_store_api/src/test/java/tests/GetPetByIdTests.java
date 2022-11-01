@@ -47,7 +47,7 @@ public class GetPetByIdTests extends Initialization {
 
         ResponseWrapper
                 .assertSoftly(softly -> {
-                    softly.assertThat(response.getId()).withFailMessage("Response is null!")
+                    softly.assertThat(response.getId()).withFailMessage("petId is null!")
                             .isNotNull();
                     softly.assertThat(response.getName()).withFailMessage("Pet name <%s> is not equal to <%s>", response.getName(), createPetBody.getName())
                             .isEqualTo(createPetBody.getName());
@@ -80,7 +80,7 @@ public class GetPetByIdTests extends Initialization {
 
         ResponseWrapper
                 .assertSoftly(softly -> {
-                    softly.assertThat(response.getId()).withFailMessage("Response is null!")
+                    softly.assertThat(response.getId()).withFailMessage("petId is null!")
                             .isNotNull();
                     softly.assertThat(response.getName()).withFailMessage("Pet name <%s> is not equal to <%s>", response.getName(), createPetBody.getName())
                             .isEqualTo(createPetBody.getName());
