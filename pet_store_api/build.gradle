@@ -1,0 +1,72 @@
+plugins {
+    id "io.qameta.allure" version "2.11.2"
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+allure {
+    version("2.18.1")
+    useJUnit5 {
+        version = '2.18.1' // Latest Allure Version
+    }
+}
+
+dependencies {
+    // JUnit аннотации
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+
+    //RestAssure аннотации
+    implementation 'io.rest-assured:rest-assured:5.0.1'
+    implementation "io.rest-assured:rest-assured-all:5.0.1"
+
+    implementation 'commons-codec:commons-codec:1.15'
+
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.12.0'
+
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.0'
+
+    //Allure аннотации
+    implementation 'io.qameta.allure:allure-rest-assured:2.18.1'
+    testImplementation 'io.qameta.allure:allure-junit5:2.18.1'
+
+    //AssertJ аннотации
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+
+    //Lombok аннотации
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    //Faker аннотации
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+
+    //Owner аннотации
+    implementation 'org.aeonbits.owner:owner:1.0.12'
+
+    //Jackson аннотации
+    implementation'org.openapitools:jackson-databind-nullable:0.2.1'
+
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.9.1'
+
+    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    testImplementation 'commons-codec:commons-codec:1.15'
+
+    implementation 'com.github.automatedowl:allure-environment-writer:1.0.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+apply plugin: "io.qameta.allure"

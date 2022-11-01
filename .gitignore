@@ -1,1 +1,4 @@
 /.idea/
+/selenium_avito/.allure/
+/pet_store_api/allure-results/
+/pet_store_api/target/
