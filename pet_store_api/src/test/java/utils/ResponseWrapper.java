@@ -31,7 +31,7 @@ public class ResponseWrapper {
     }
 
     public ResponseWrapper assertStatusCode(int expectedStatusCode) {
-        assertThat(response.getStatusCode()).isEqualTo(expectedStatusCode);
+        assertThat(getStatusCode()).isEqualTo(expectedStatusCode);
         return this;
     }
 
