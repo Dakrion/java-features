@@ -25,7 +25,7 @@ public @interface Provider {
     String testClass() default "";
 
     /**
-     * variants of tests - positive, negative, unknown
+     * version of tests - positive, negative, unknown
      * @return enum
      */
     TestMode testMode() default TestMode.UNKNOWN;
