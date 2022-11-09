@@ -9,6 +9,9 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Aggregator for variable. Implements JUnit {@link org.junit.jupiter.params.aggregator.ArgumentsAggregator}
+ */
 public class JsonToList implements ArgumentsAggregator {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
