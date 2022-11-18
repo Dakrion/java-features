@@ -1,0 +1,64 @@
+plugins {
+//    id "io.qameta.allure" version "2.9.6"
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+//allure {
+//    version("2.18.1")
+//    useJUnit5 {
+//        version = '2.18.1' // Latest Allure Version
+//    }
+//}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+
+    // Database
+    implementation 'mysql:mysql-connector-java:8.0.30'
+    testImplementation 'mysql:mysql-connector-java:8.0.30'
+
+    //Lombok аннотации
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    //Allure аннотации
+//    testImplementation 'io.qameta.allure:allure-junit5:2.19.0'
+
+    //AssertJ аннотации
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+
+    //Faker аннотации
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+
+    //Owner аннотации
+    implementation 'org.aeonbits.owner:owner:1.0.12'
+
+    //Jackson аннотации
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.4'
+
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.9.1'
+
+    testImplementation 'org.slf4j:slf4j-simple:2.0.3'
+
+    implementation 'org.slf4j:slf4j-api:2.0.3'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//apply plugin: "io.qameta.allure"
