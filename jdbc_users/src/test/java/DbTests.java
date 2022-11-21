@@ -1,15 +1,16 @@
 import database.DBConnection;
 import database.DatabaseController;
 import database.QueryBuilder;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import database.Response;
+import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import static io.qameta.allure.Allure.step;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DbTests {
@@ -23,64 +24,53 @@ public class DbTests {
 
     QueryBuilder queryBuilder;
 
+    List<Response> list = new ArrayList<>();
+
+    Response response;
+
     @BeforeAll
     void init() {
         databaseController = new DatabaseController();
         queryBuilder = new QueryBuilder();
     }
 
-    @AfterEach
+    @AfterAll
     void stop() throws SQLException {
         DBConnection.closeConnection();
     }
 
     @Test
-    void example() {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("nickname", "Robert");
-        map.put("email", "test12@mail.ru");
+    @DisplayName("Тест на проверку select-запроса")
+    void selectTests() {
+        step("Сделать запрос в бд для получения всех записей юзеров", () -> {
+            list = databaseController
+                    .buildQuery(queryBuilder
+                            .selectAll()
+                            .from("users")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAsList(Response.class);
+        });
 
-//        databaseController
-//
-//                .buildQuery(queryBuilder
-//                        .select("id")
-//                        .from("users")
-//                        .where("id = 1")
-//                        .printQuery())
-//                .execute()
-//                .printResult()
-//                .extractToMap();
-//
-//        databaseController
-//
-//                .buildQuery(queryBuilder
-//                        .selectAll()
-//                        .from("users"))
-//                .execute()
-//                .printResult();
+        step("Проверить что результат не пустой", () -> assertThat(list).isNotNull());
 
-//        databaseController
-//                .buildQuery(queryBuilder
-//                        .customQuery(INSERT_SQL_USERS, "nickname", "email", "password", "birthdate", "is_male", "Tom", "tom@mail.ru", "fgflk", LocalDate.now().toString(), 1)
-//                        .printQuery());
-//                .execute()
-//                .printResult();
-        databaseController
-                .buildQuery(queryBuilder
-                        .insert("users")
-                        .columns("nickname", "email", "password", "birthdate", "is_male")
-                        .values("Malek", "ml@mail.ru", "fgflk", LocalDate.now().toString(), 1)
-                        .printQuery())
-                .execute()
-                .printResult();
+        step("Сделать запрос в бд для получения одной записи", () -> {
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .selectAll()
+                            .from("users")
+                            .where("id = 1")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
 
-//        List<Response> list = databaseController
-//                .buildQuery(queryBuilder
-//                        .selectAll()
-//                        .from("users"))
-//                .execute()
-//                .extractAsList(Response.class);
-//
-//        list.forEach(System.out::println);
+        step("Проверить результат", () -> assertSoftly(softly -> {
+            assertThat(response.getId()).isEqualTo(1);
+            assertThat(response.is_male()).isEqualTo(false);
+            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+        }));
     }
 }

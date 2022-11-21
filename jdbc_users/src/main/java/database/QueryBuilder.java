@@ -3,6 +3,7 @@ package database;
 import database.enums.Instances;
 import database.sqllanguage.DDL;
 import database.sqllanguage.DML;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Formatter;
 import java.util.Map;
@@ -15,7 +16,8 @@ public class QueryBuilder implements DDL, DML {
 
     private StringBuilder QUERY = new StringBuilder();
 
-    public QueryBuilder select(String... columns) {
+    @Override
+    public QueryBuilder select(String @NotNull ... columns) {
         QUERY.append("SELECT ");
         for (String column : columns) {
             QUERY.append(column).append(", ");
@@ -75,7 +77,7 @@ public class QueryBuilder implements DDL, DML {
         return this;
     }
 
-    public QueryBuilder set(Map<String, Object> values) {
+    public QueryBuilder set(@NotNull Map<String, Object> values) {
         values
                 .entrySet()
                 .forEach(el -> {
@@ -100,7 +102,7 @@ public class QueryBuilder implements DDL, DML {
         return this;
     }
 
-    public QueryBuilder columns(String... columns) {
+    public QueryBuilder columns(String @NotNull ... columns) {
         QUERY.append("(");
         for (String column : columns) {
             QUERY.append(column).append(", ");
@@ -109,7 +111,7 @@ public class QueryBuilder implements DDL, DML {
         return this;
     }
 
-    public QueryBuilder values(Object... values) {
+    public QueryBuilder values(Object @NotNull ... values) {
         QUERY.append("VALUES (");
         for (Object value : values) {
             if (value instanceof String) {

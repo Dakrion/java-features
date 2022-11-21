@@ -38,31 +38,29 @@ public class DBConnection {
     }
 
     /**
-     * Открывает соединение с базой данных
+     * Открывает соединение с базой данных. Перед этим закрывает старое соединение если такое есть
+     *
      * @return {@link java.sql.Connection}
      */
     protected static Connection openConnection() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(URL, props);
-                return connection;
-            } catch (SQLException e) {
-                log.error(ERROR_GET_CONNECTION, e);
-            }
+        try {
+            closeConnection();
+            connection = DriverManager.getConnection(URL, props);
             return connection;
+        } catch (SQLException e) {
+            log.error(ERROR_GET_CONNECTION, e);
         }
-        return null;
+        return connection;
     }
 
     /**
      * Метод для закрытия соединения с базой данных
+     *
      * @throws SQLException
      */
     public static void closeConnection() throws SQLException {
         if (connection != null) {
             connection.close();
-        } else {
-            System.out.println("No active connections");
         }
     }
 }

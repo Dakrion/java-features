@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import database.exceptions.ConvertResultException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class DatabaseController {
 
     private List<Map<String, Object>> resultList;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     /**
      * Метод, возвращающий готовый запрос из {@link QueryBuilder}, а затем очищает запрос после получения
@@ -31,7 +32,7 @@ public class DatabaseController {
      * @param builder
      * @return this
      */
-    public DatabaseController buildQuery(QueryBuilder builder) {
+    public DatabaseController buildQuery(@NotNull QueryBuilder builder) {
         query = builder.getFinalQuery();
         builder.clearQuery();
         return this;
@@ -42,7 +43,6 @@ public class DatabaseController {
      * в зависимости от его содержания
      *
      * @return this
-     * @throws RuntimeException
      */
     public DatabaseController execute() {
         try (Connection connection = DBConnection.openConnection()) {
@@ -57,9 +57,13 @@ public class DatabaseController {
                         statement.executeUpdate(query);
                         System.out.println(statement.getUpdateCount() + " rows affected");
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } finally {
+                    rs.close();
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new NullPointerException("Connection is null!!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,7 +123,7 @@ public class DatabaseController {
      * @return List
      * @throws SQLException
      */
-    private List<Map<String, Object>> saveResult() throws SQLException {
+    private @NotNull List<Map<String, Object>> saveResult() throws SQLException {
         List<Map<String, Object>> result = new ArrayList<>();
         if (rs != null) {
             ResultSetMetaData data = rs.getMetaData();
