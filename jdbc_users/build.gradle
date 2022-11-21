@@ -1,5 +1,5 @@
 plugins {
-    id "io.qameta.allure" version "2.9.6"
+    id "io.qameta.allure" version "2.11.2"
     id 'java'
 }
 
@@ -21,7 +21,7 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 dependencies {
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
@@ -35,7 +35,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
     //Allure аннотации
-    testImplementation 'io.qameta.allure:allure-junit5:2.19.0'
+    testImplementation 'io.qameta.allure:allure-junit5:2.20.0'
 
     //AssertJ аннотации
     testImplementation 'org.assertj:assertj-core:3.23.1'
