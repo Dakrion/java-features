@@ -27,9 +27,9 @@ public class DatabaseController {
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     /**
-     * Метод, возвращающий готовый запрос из {@link QueryBuilder}, а затем очищает запрос после получения
+     * Метод возвращает готовый запрос из {@link QueryBuilder}, а затем очищает переменную с запросом после получения
      *
-     * @param builder
+     * @param builder объект класса {@link QueryBuilder}, с помощью которого собирается запрос
      * @return this
      */
     public DatabaseController buildQuery(@NotNull QueryBuilder builder) {
@@ -37,7 +37,6 @@ public class DatabaseController {
         builder.clearQuery();
         return this;
     }
-
     /**
      * Метод для отправки запроса. Создает соединение, затем стейтмент и выполняет запрос
      * в зависимости от его содержания
@@ -70,10 +69,8 @@ public class DatabaseController {
         }
         return this;
     }
-
     /**
      * Выводит результат запроса на консоль
-     *
      * @return this
      */
     public DatabaseController printResult() {
@@ -89,7 +86,6 @@ public class DatabaseController {
         }
         return this;
     }
-
     /**
      * Преобразует результат запроса в объект класса {@link Class<>T</>}
      *
@@ -102,7 +98,6 @@ public class DatabaseController {
         } else
             throw new ConvertResultException("Результат запроса более 1 записи, используйте метод extractAsList() для извлечения");
     }
-
     /**
      * Преобразует результат запроса в список объектов класса {@link Class<>T</>}
      *
@@ -116,7 +111,6 @@ public class DatabaseController {
         }
         return result;
     }
-
     /**
      * Сохраняет результат запроса из {@link java.sql.ResultSet}
      *
