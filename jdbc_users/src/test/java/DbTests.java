@@ -1,7 +1,7 @@
 import database.DBConnection;
 import database.DatabaseController;
 import database.QueryBuilder;
-import database.Response;
+import model.Response;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;

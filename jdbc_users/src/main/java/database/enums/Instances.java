@@ -1,7 +1,7 @@
 package database.enums;
 
 /**
- * Сущности для запроса
+ * Объекты для запроса
  */
 public enum Instances {
     USER,
