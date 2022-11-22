@@ -54,7 +54,7 @@ public class DatabaseController {
                         resultList = saveResult();
                     } else {
                         statement.executeUpdate(query);
-                        System.out.println(statement.getUpdateCount() + " rows affected");
+                        System.out.println(statement.getUpdateCount() + " rows affected\n");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -64,7 +64,7 @@ public class DatabaseController {
                     }
                 }
             } catch (Exception e) {
-                throw new NullPointerException("Connection is null!!");
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();

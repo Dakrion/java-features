@@ -101,8 +101,7 @@ public class DbTests {
                             .set("email", email)
                             .where("id = 3")
                             .printQuery())
-                    .execute()
-                    .printResult();
+                    .execute();
         });
 
         step("Проверить результат", () -> {
@@ -125,8 +124,7 @@ public class DbTests {
                             .set("email", "empty")
                             .where("id = 3")
                             .printQuery())
-                    .execute()
-                    .printResult();
+                    .execute();
         });
     }
 }
