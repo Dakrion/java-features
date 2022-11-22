@@ -59,7 +59,9 @@ public class DatabaseController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } finally {
-                    rs.close();
+                    if (rs != null) {
+                        rs.close();
+                    }
                 }
             } catch (Exception e) {
                 throw new NullPointerException("Connection is null!!");

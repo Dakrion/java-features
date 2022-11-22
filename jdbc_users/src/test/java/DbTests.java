@@ -72,5 +72,61 @@ public class DbTests {
             assertThat(response.is_male()).isEqualTo(false);
             assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
         }));
+
+        step("Сделать запрос в бд для получения одной записи с одним полем", () -> {
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .select("nickname")
+                            .from("users")
+                            .where("id = 1")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
+
+        step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("dwana.turcotte")));
+    }
+
+    @Test
+    @DisplayName("Тест на проверку update-запроса")
+    void updateTests() {
+        String email = "test123@mail.ru";
+
+        step("Сделать запрос в бд для обновления записи", () -> {
+
+            databaseController
+                    .buildQuery(queryBuilder
+                            .update("users")
+                            .set("email", email)
+                            .where("id = 3")
+                            .printQuery())
+                    .execute()
+                    .printResult();
+        });
+
+        step("Проверить результат", () -> {
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .select("email")
+                            .from("users")
+                            .where("id = 3")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+            assertThat(response.getEmail()).isEqualTo(email);
+        });
+
+        step("Изменить email для последующих тестов", () -> {
+            databaseController
+                    .buildQuery(queryBuilder
+                            .update("users")
+                            .set("email", "empty")
+                            .where("id = 3")
+                            .printQuery())
+                    .execute()
+                    .printResult();
+        });
     }
 }
