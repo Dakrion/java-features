@@ -37,6 +37,7 @@ public class DatabaseController {
         builder.clearQuery();
         return this;
     }
+
     /**
      * Метод для отправки запроса. Создает соединение, затем стейтмент и выполняет запрос
      * в зависимости от его содержания
@@ -45,34 +46,31 @@ public class DatabaseController {
      */
     public DatabaseController execute() {
         try (Connection connection = DBConnection.openConnection()) {
-            try {
-                assert connection != null;
-                try (Statement statement = connection.createStatement()) {
-                    connection.setAutoCommit(true);
-                    if (query.startsWith("SELECT ") || query.startsWith("select ")) {
-                        rs = statement.executeQuery(query);
-                        resultList = saveResult();
-                    } else {
-                        statement.executeUpdate(query);
-                        System.out.println(statement.getUpdateCount() + " rows affected\n");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (rs != null) {
-                        rs.close();
-                    }
+            try (Statement statement = connection.createStatement()) {
+                connection.setAutoCommit(true);
+                if (query.startsWith("SELECT ") || query.startsWith("select ")) {
+                    rs = statement.executeQuery(query);
+                    resultList = saveResult();
+                } else {
+                    statement.executeUpdate(query);
+                    System.out.println(statement.getUpdateCount() + " rows affected\n");
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return this;
     }
+
     /**
      * Выводит результат запроса на консоль
+     *
      * @return this
      */
     public DatabaseController printResult() {
@@ -88,6 +86,7 @@ public class DatabaseController {
         }
         return this;
     }
+
     /**
      * Преобразует результат запроса в объект класса {@link Class<>T</>}
      *
@@ -100,6 +99,7 @@ public class DatabaseController {
         } else
             throw new ConvertResultException("Результат запроса более 1 записи, используйте метод extractAsList() для извлечения");
     }
+
     /**
      * Преобразует результат запроса в список объектов класса {@link Class<>T</>}
      *
@@ -113,6 +113,7 @@ public class DatabaseController {
         }
         return result;
     }
+
     /**
      * Сохраняет результат запроса из {@link java.sql.ResultSet}
      *
