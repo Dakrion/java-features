@@ -224,4 +224,92 @@ public class DbTests {
                     .execute();
         });
     }
+    @Test
+    @DisplayName("Тест на проверку insert-запроса с использованием SingleConnection")
+    void insertTests() {
+        step("Сделать запрос в бд для создания записи", () -> {
+
+            databaseController
+                    .buildQuery(queryBuilder
+                            .insert("users")
+                            .columns("nickname", "email", "password")
+                            .values("Dominik", "Dom@email.ru", "12345")
+                            .printQuery())
+                    .execute();
+        });
+
+        step("Сделать запрос в бд для получения созданной записи", () -> {
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .selectAll()
+                            .from("users")
+                            .where("nickname = 'Dominik'")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
+
+        step("Проверить результат", () -> assertSoftly(softly -> {
+            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getPassword()).isEqualTo("12345");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
+        }));
+
+        step("Удалить созданную запись", () -> {
+            databaseController
+                    .buildQuery(queryBuilder
+                            .delete("users")
+                            .where("id = " + response.getId())
+                            .printQuery())
+                    .execute()
+                    .printResult();
+        });
+    }
+
+    @Test
+    @DisplayName("Тест на проверку insert-запроса с использованием ConnectionPool")
+    void insertTestsWithPool() {
+        step("Сделать запрос в бд для создания записи", () -> {
+
+            databaseController
+                    .buildQuery(queryBuilder
+                            .insert("users")
+                            .columns("nickname", "email", "password")
+                            .values("Dominik", "Dom@email.ru", "12345")
+                            .printQuery())
+                    .useConnectionPool()
+                    .execute();
+        });
+
+        step("Сделать запрос в бд для получения созданной записи", () -> {
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .selectAll()
+                            .from("users")
+                            .where("nickname = 'Dominik'")
+                            .printQuery())
+                    .useConnectionPool()
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
+
+        step("Проверить результат", () -> assertSoftly(softly -> {
+            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getPassword()).isEqualTo("12345");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
+        }));
+
+        step("Удалить созданную запись", () -> {
+            databaseController
+                    .buildQuery(queryBuilder
+                            .delete("users")
+                            .where("id = " + response.getId())
+                            .printQuery())
+                    .useConnectionPool()
+                    .execute()
+                    .printResult();
+        });
+    }
 }

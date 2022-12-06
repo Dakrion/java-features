@@ -59,6 +59,7 @@ public class DatabaseController {
                     rs = statement.executeQuery(query);
                     resultList = saveResult();
                 } else {
+                    resultList = null;
                     statement.executeUpdate(query);
                     System.out.println(statement.getUpdateCount() + " rows affected\n");
                 }
