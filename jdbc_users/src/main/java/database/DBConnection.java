@@ -96,7 +96,7 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @return {@link Connection}
      * @throws SQLException
      */
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnectionFromPool() throws SQLException {
         if (connectionPool.isEmpty()) {
             if (usedConnections.size() < MAX_POOL_SIZE) {
                 connectionPool.add(DriverManager.getConnection(URL, props));

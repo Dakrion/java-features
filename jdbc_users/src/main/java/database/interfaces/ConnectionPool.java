@@ -22,8 +22,8 @@ public interface ConnectionPool {
      *
      * @return {@link Connection}
      */
-    static Connection getConnection() throws SQLException {
-        return DBConnection.getConnection();
+    static Connection getConnectionFromPool() throws SQLException {
+        return DBConnection.getConnectionFromPool();
     }
 
     /**

@@ -3,8 +3,6 @@ package database;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import database.exceptions.ConvertResultException;
-import database.interfaces.ConnectionPool;
-import database.interfaces.SingleConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static database.interfaces.ConnectionPool.*;
+import static database.interfaces.SingleConnection.openConnection;
 
 /**
  * Контроллер для базы данных
@@ -50,7 +51,7 @@ public class DatabaseController {
      */
     public DatabaseController execute() {
         try {
-            Connection connection = useConnectionPool ? ConnectionPool.getConnection() : SingleConnection.openConnection();
+            Connection connection = useConnectionPool ? getConnectionFromPool() : openConnection();
             try (Statement statement = connection.createStatement()) {
                 connection.setAutoCommit(true);
 
@@ -65,7 +66,7 @@ public class DatabaseController {
                 e.printStackTrace();
             } finally {
                 if (rs != null) rs.close();
-                if (useConnectionPool) ConnectionPool.releaseConnection(connection);
+                if (useConnectionPool) releaseConnection(connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class DatabaseController {
      */
     public DatabaseController useConnectionPool() throws SQLException {
         useConnectionPool = true;
-        ConnectionPool.createPool();
+        createPool();
         return this;
     }
 
