@@ -30,6 +30,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.replace(QUERY.length() - 2, QUERY.length() - 1, "\n");
         return this;
     }
+
     /**
      * Выбор всех полей для оператора select
      * @return this
@@ -39,6 +40,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("SELECT *\n");
         return this;
     }
+
     /**
      * Оператор insert
      * @param instance объект, с которым будем взаимодействавать
@@ -49,6 +51,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("INSERT INTO ").append(instance).append("\n");
         return this;
     }
+
     /**
      * Оператор update
      * @param instance объект, с которым будем взаимодействавать
@@ -58,6 +61,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("UPDATE ").append(instance).append("\n");
         return this;
     }
+
     /**
      * Оператор delete
      * @param instance объект, с которым будем взаимодействавать
@@ -68,6 +72,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("DELETE FROM ").append(instance).append("\n");
         return this;
     }
+
     /**
      * Оператор create
      * @param instance объект, который будем создавать
@@ -79,26 +84,42 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("CREATE ").append(instance).append(" ").append(name).append("\n");
         return this;
     }
+
     /**
      * Оператор alter
-     * @param table имя таблицы
+     * @param instance объект, который будем изменять
+     * @param name имя объекта
      * @return this
      */
     @Override
-    public QueryBuilder alter(String table) {
-        QUERY.append("ALTER TABLE ").append(table).append("\n");
+    public QueryBuilder alter(Instances instance, String name) {
+        QUERY.append("ALTER ").append(instance).append(" ").append(name).append("\n");
         return this;
     }
+
     /**
      * Оператор drop
+     * @param instance объект, который будем удалять
+     * @param name имя объекта
+     * @return this
+     */
+    @Override
+    public QueryBuilder drop(Instances instance, String name) {
+        QUERY.append("DROP ").append(instance).append(" ").append(name).append("\n");
+        return this;
+    }
+
+    /**
+     * Оператор truncate
      * @param table имя таблицы
      * @return this
      */
     @Override
-    public QueryBuilder drop(String table) {
-        QUERY.append("DROP TABLE ").append(table).append("\n");
+    public QueryBuilder truncate(String table) {
+        QUERY.append("TRUNCATE TABLE ").append(table).append("\n");
         return this;
     }
+
     /**
      * Оператор from
      * @param table имя таблицы
@@ -108,6 +129,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("FROM ").append(table).append("\n");
         return this;
     }
+
     /**
      * Оператор where
      * @param condition условие для выборки
@@ -117,6 +139,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("WHERE ").append(condition).append("\n");
         return this;
     }
+
     /**
      * Оператор set
      * @param values набор пар ключ-значение, находящихся в Map. Должны соответствовать структуре <Поле = Значение>
@@ -138,6 +161,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("SET ").append(queryStr).append("\n");
         return this;
     }
+
     /**
      * Оператор set
      * @param field поле из таблицы
@@ -151,6 +175,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.append("SET ").append(field).append(" = ").append(value).append("\n");
         return this;
     }
+
     /**
      * Поля в таблице, с которыми будут производиться манипуляции
      * @param columns названия полей
@@ -164,6 +189,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.replace(QUERY.length() - 2, QUERY.length() - 1, ")\n");
         return this;
     }
+
     /**
      * Значения, которые перечисляются после insert() метода и columns() метода
      * @param values значения
@@ -180,6 +206,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY.replace(QUERY.length() - 2, QUERY.length() - 1, ")\n");
         return this;
     }
+
     /**
      * Метод для создания запроса из готового запроса
      * @param query готовый запрос без переменных
@@ -189,6 +216,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY = new StringBuilder().append(query);
         return this;
     }
+
     /**
      * Метод для создания запроса с помощью конструктора и переменных.
      * Принимает два параметра на вход:
@@ -202,6 +230,7 @@ public class QueryBuilder implements DDL, DML {
         QUERY = new StringBuilder().append(new Formatter().format(queryPattern, args));
         return this;
     }
+
     /**
      * Печать запроса в консоль
      * @return this
@@ -210,6 +239,7 @@ public class QueryBuilder implements DDL, DML {
         System.out.println(QUERY);
         return this;
     }
+
     /**
      * Возвращает запрос в строковом формате. Используется в {@link database.DatabaseController#buildQuery(QueryBuilder)}
      * @return String
@@ -217,6 +247,7 @@ public class QueryBuilder implements DDL, DML {
     public String getFinalQuery() {
         return QUERY.toString();
     }
+
     /**
      * Сбрасывает билдер с запросом
      */

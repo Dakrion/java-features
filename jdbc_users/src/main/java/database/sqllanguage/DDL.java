@@ -10,7 +10,9 @@ public interface DDL {
 
     QueryBuilder create(Instances instance, String name);
 
-    QueryBuilder alter(String table);
+    QueryBuilder alter(Instances instance, String name);
 
-    QueryBuilder drop(String table);
+    QueryBuilder drop(Instances instance, String name);
+
+    QueryBuilder truncate(String table);
 }

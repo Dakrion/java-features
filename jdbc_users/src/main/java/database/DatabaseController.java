@@ -3,6 +3,8 @@ package database;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import database.exceptions.ConvertResultException;
+import database.interfaces.ConnectionPool;
+import database.interfaces.SingleConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +25,8 @@ public class DatabaseController {
     private ResultSet rs;
 
     private List<Map<String, Object>> resultList;
+
+    private boolean useConnectionPool = false;
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
@@ -45,9 +49,11 @@ public class DatabaseController {
      * @return this
      */
     public DatabaseController execute() {
-        try (Connection connection = DBConnection.openConnection()) {
+        try {
+            Connection connection = useConnectionPool ? ConnectionPool.getConnection() : SingleConnection.openConnection();
             try (Statement statement = connection.createStatement()) {
                 connection.setAutoCommit(true);
+
                 if (query.startsWith("SELECT ") || query.startsWith("select ")) {
                     rs = statement.executeQuery(query);
                     resultList = saveResult();
@@ -58,13 +64,18 @@ public class DatabaseController {
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                if (rs != null) rs.close();
+                if (useConnectionPool) ConnectionPool.releaseConnection(connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return this;
+    }
+
+    public DatabaseController useConnectionPool() throws SQLException {
+        useConnectionPool = true;
+        ConnectionPool.createPool();
         return this;
     }
 
@@ -91,13 +102,14 @@ public class DatabaseController {
      * Преобразует результат запроса в объект класса {@link Class<>T</>}
      *
      * @return {@link class T}
-     * @throws ConvertResultException
+     * @throws ConvertResultException в случае если результат содержит более 1 записи
      */
     public <T> T extractAs(Class<T> cls) {
         if (resultList.size() == 1) {
             return mapper.convertValue(resultList.get(0), cls);
         } else
-            throw new ConvertResultException("Результат запроса более 1 записи, используйте метод extractAsList() для извлечения");
+            throw new ConvertResultException(
+                    "Результат запроса более 1 записи, используйте метод extractAsList() для извлечения");
     }
 
     /**

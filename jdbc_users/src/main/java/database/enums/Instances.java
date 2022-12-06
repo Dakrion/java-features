@@ -6,5 +6,6 @@ package database.enums;
 public enum Instances {
     USER,
     TABLE,
-    VIEW
+    VIEW,
+    DATABASE
 }
