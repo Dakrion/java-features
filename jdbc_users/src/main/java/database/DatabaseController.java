@@ -73,6 +73,11 @@ public class DatabaseController {
         return this;
     }
 
+    /**
+     * Включает использование ConnectionPool вместо одиночного соединения
+     * @return this
+     * @throws SQLException
+     */
     public DatabaseController useConnectionPool() throws SQLException {
         useConnectionPool = true;
         ConnectionPool.createPool();
