@@ -3,6 +3,7 @@ package database;
 import config.BaseConfig;
 import database.interfaces.ConnectionPool;
 import database.interfaces.SingleConnection;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.aeonbits.owner.ConfigFactory;
 
@@ -18,11 +19,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Класс с конфигурацией базы данных и методами для установки соединения
  */
 @Slf4j
+@UtilityClass
 public class DBConnection implements SingleConnection, ConnectionPool {
-
-    private DBConnection() {
-        throw new IllegalStateException("Utility class");
-    }
 
     private static final BaseConfig config = ConfigFactory.newInstance()
             .create(BaseConfig.class);
@@ -124,7 +122,7 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @param connection соединение для возврата
      * @return boolean
      */
-    public static boolean releaseConnection(Connection connection) {
+    public static synchronized boolean releaseConnection(Connection connection) {
         connectionPool.add(connection);
 
         return usedConnections.remove(connection);
