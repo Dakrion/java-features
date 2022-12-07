@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Класс с конфигурацией базы данных и методами для установки соединения
@@ -34,9 +35,9 @@ public class DBConnection implements SingleConnection, ConnectionPool {
 
     private static List<Connection> connectionPool;
 
-    private static final List<Connection> usedConnections = new ArrayList<>();
+    private static final List<Connection> usedConnections = new CopyOnWriteArrayList<>();
 
-    private static final int MAX_POOL_SIZE = 10;
+    private static final int MAX_POOL_SIZE = 5;
 
     private static final int MAX_TIMEOUT = 3000;
 
@@ -97,23 +98,25 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @throws SQLException
      */
     public static Connection getConnectionFromPool() throws SQLException {
-        if (connectionPool.isEmpty()) {
-            if (usedConnections.size() < MAX_POOL_SIZE) {
-                connectionPool.add(DriverManager.getConnection(URL, props));
-            } else {
+        synchronized (connectionPool) {
+            if (!connectionPool.isEmpty()) {
+                if (usedConnections.size() < MAX_POOL_SIZE) {
+                    connectionPool.add(DriverManager.getConnection(URL, props));
+                }
+
+                Connection connection = connectionPool
+                        .remove(connectionPool.size() - 1);
+
+                if (!connection.isValid(MAX_TIMEOUT)) {
+                    connection = DriverManager.getConnection(URL, props);
+                }
+                usedConnections.add(connection);
+
+                return connection;
+            } else
                 throw new RuntimeException(
-                        "Maximum pool size reached, no available connections!");
-            }
+                    "Maximum pool size reached, no available connections!");
         }
-        Connection connection = connectionPool
-                .remove(connectionPool.size() - 1);
-
-        if (!connection.isValid(MAX_TIMEOUT)) {
-            connection = DriverManager.getConnection(URL, props);
-        }
-        usedConnections.add(connection);
-
-        return connection;
     }
 
     /**
@@ -134,13 +137,13 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @throws SQLException
      */
     public static void shutDown() throws SQLException {
-        if (connectionPool != null) {
+        if (!connectionPool.isEmpty()) {
             usedConnections.forEach(DBConnection::releaseConnection);
 
             for (Connection c : connectionPool) {
                 c.close();
             }
             connectionPool.clear();
-        } else System.out.println("Connection pool was not used");
+        }
     }
 }
