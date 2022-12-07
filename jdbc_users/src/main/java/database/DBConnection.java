@@ -79,6 +79,7 @@ public class DBConnection implements SingleConnection, ConnectionPool {
 
     /**
      * Создает пул соединений к базе данных
+     *
      * @throws SQLException
      */
     public static void createPool() throws SQLException {
@@ -97,26 +98,24 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @return {@link Connection}
      * @throws SQLException
      */
-    public static Connection getConnectionFromPool() throws SQLException {
-        synchronized (connectionPool) {
-            if (!connectionPool.isEmpty()) {
-                if (usedConnections.size() < MAX_POOL_SIZE) {
-                    connectionPool.add(DriverManager.getConnection(URL, props));
-                }
-
-                Connection connection = connectionPool
-                        .remove(connectionPool.size() - 1);
-
-                if (!connection.isValid(MAX_TIMEOUT)) {
-                    connection = DriverManager.getConnection(URL, props);
-                }
-                usedConnections.add(connection);
-
-                return connection;
+    public static synchronized Connection getConnectionFromPool() throws SQLException {
+        if (connectionPool.isEmpty()) {
+            if (usedConnections.size() < MAX_POOL_SIZE) {
+                connectionPool.add(DriverManager.getConnection(URL, props));
             } else
                 throw new RuntimeException(
-                    "Maximum pool size reached, no available connections!");
+                        "Maximum pool size reached, no available connections!");
         }
+
+        Connection connection = connectionPool
+                .remove(connectionPool.size() - 1);
+
+        if (!connection.isValid(MAX_TIMEOUT)) {
+            connection = DriverManager.getConnection(URL, props);
+        }
+        usedConnections.add(connection);
+
+        return connection;
     }
 
     /**
