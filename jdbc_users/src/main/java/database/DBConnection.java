@@ -35,7 +35,7 @@ public class DBConnection implements SingleConnection, ConnectionPool {
 
     private static final List<Connection> usedConnections = new CopyOnWriteArrayList<>();
 
-    private static final int MAX_POOL_SIZE = 5;
+    private static Integer MAX_POOL_SIZE;
 
     private static final int MAX_TIMEOUT = 3000;
 
@@ -77,11 +77,12 @@ public class DBConnection implements SingleConnection, ConnectionPool {
 
     /**
      * Создает пул соединений к базе данных
-     *
+     * @param poolSize размер пула
      * @throws SQLException
      */
-    public static void createPool() throws SQLException {
+    public static void createPool(Integer poolSize) throws SQLException {
         if (connectionPool == null) {
+            MAX_POOL_SIZE = poolSize;
             connectionPool = new ArrayList<>(MAX_POOL_SIZE);
 
             for (int i = 0; i < MAX_POOL_SIZE; i++) {
@@ -134,13 +135,15 @@ public class DBConnection implements SingleConnection, ConnectionPool {
      * @throws SQLException
      */
     public static void shutDown() throws SQLException {
-        if (!connectionPool.isEmpty()) {
-            usedConnections.forEach(DBConnection::releaseConnection);
+        if (connectionPool != null) {
+            if (!usedConnections.isEmpty()) usedConnections.forEach(DBConnection::releaseConnection);
 
-            for (Connection c : connectionPool) {
-                c.close();
+            if (!connectionPool.isEmpty()) {
+                for (Connection c : connectionPool) {
+                    c.close();
+                }
+                connectionPool.clear();
             }
-            connectionPool.clear();
         }
     }
 }

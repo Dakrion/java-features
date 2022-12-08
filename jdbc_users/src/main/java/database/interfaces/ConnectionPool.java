@@ -12,9 +12,10 @@ public interface ConnectionPool {
 
     /**
      * Создает пул соединений
+     * @param poolSize размер пула
      */
-    static void createPool() throws SQLException {
-        DBConnection.createPool();
+    static void createPool(Integer poolSize) throws SQLException {
+        DBConnection.createPool(poolSize);
     }
 
     /**

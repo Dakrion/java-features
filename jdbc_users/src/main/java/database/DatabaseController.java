@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static database.interfaces.ConnectionPool.*;
 import static database.interfaces.SingleConnection.openConnection;
@@ -37,7 +38,7 @@ public class DatabaseController {
      * @param builder объект класса {@link QueryBuilder}, с помощью которого собирается запрос
      * @return this
      */
-    public DatabaseController buildQuery(@NotNull QueryBuilder builder) {
+    public synchronized DatabaseController buildQuery(@NotNull QueryBuilder builder) {
         query = builder.getFinalQuery();
         builder.clearQuery();
         return this;
@@ -49,13 +50,13 @@ public class DatabaseController {
      *
      * @return this
      */
-    public DatabaseController execute() {
+    public synchronized DatabaseController execute() {
         try {
             Connection connection = useConnectionPool ? getConnectionFromPool() : openConnection();
             try (Statement statement = connection.createStatement()) {
                 connection.setAutoCommit(true);
 
-                if (query.startsWith("SELECT ") || query.startsWith("select ")) {
+                if (query.toUpperCase().startsWith("SELECT ")) {
                     rs = statement.executeQuery(query);
                     resultList = saveResult();
                 } else {
@@ -77,12 +78,17 @@ public class DatabaseController {
 
     /**
      * Включает использование ConnectionPool вместо одиночного соединения
+     *
      * @return this
-     * @throws SQLException
      */
-    public DatabaseController useConnectionPool() throws SQLException {
+    public DatabaseController useConnectionPool(Integer poolSize) {
         useConnectionPool = true;
-        createPool();
+
+        try {
+            createPool(poolSize);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -111,7 +117,7 @@ public class DatabaseController {
      * @return {@link class T}
      * @throws ConvertResultException в случае если результат содержит более 1 записи
      */
-    public <T> T extractAs(Class<T> cls) {
+    public synchronized <T> T extractAs(Class<T> cls) {
         if (resultList.size() == 1) {
             return mapper.convertValue(resultList.get(0), cls);
         } else
@@ -124,8 +130,9 @@ public class DatabaseController {
      *
      * @return {@link List<>T</>
      */
-    public <T> List<T> extractAsList(Class<T> cls) {
+    public synchronized <T> List<T> extractAsList(Class<T> cls) {
         List<T> result = new ArrayList<>();
+
         for (Map<String, Object> obj : resultList) {
             T value = mapper.convertValue(obj, cls);
             result.add(value);
@@ -139,10 +146,11 @@ public class DatabaseController {
      * @return List
      * @throws SQLException
      */
-    private @NotNull List<Map<String, Object>> saveResult() throws SQLException {
+    private synchronized List<Map<String, Object>> saveResult() throws SQLException {
         List<Map<String, Object>> result = new ArrayList<>();
         if (rs != null) {
             ResultSetMetaData data = rs.getMetaData();
+
             while (rs.next()) {
                 Map<String, Object> resMap = new HashMap<>();
                 for (int i = 1; i <= data.getColumnCount(); i++) {
