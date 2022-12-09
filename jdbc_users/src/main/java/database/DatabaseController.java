@@ -82,13 +82,14 @@ public class DatabaseController {
      * @return this
      */
     public DatabaseController useConnectionPool(Integer poolSize) {
-        useConnectionPool = true;
-
         try {
             createPool(poolSize);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        useConnectionPool = true;
+
         return this;
     }
 

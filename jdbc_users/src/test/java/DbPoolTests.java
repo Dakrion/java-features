@@ -2,7 +2,10 @@ import database.DatabaseController;
 import database.QueryBuilder;
 import io.qameta.allure.Feature;
 import model.Response;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,9 +27,11 @@ public class DbPoolTests {
 
     private Response response;
 
+    private static final String SELECT_USER = "SELECT * FROM users WHERE %s = %s";
+
     @BeforeEach
     void init() {
-        databaseController = new DatabaseController().useConnectionPool(3);
+        databaseController = new DatabaseController().useConnectionPool(4);
         queryBuilder = new QueryBuilder();
     }
 
@@ -165,5 +170,26 @@ public class DbPoolTests {
                     .execute()
                     .printResult();
         });
+    }
+
+    @Test
+    @DisplayName("Тест на проверку custom-запроса")
+    void customQueryTests() {
+        step("Сделать запрос в бд для получения записи", () -> {
+
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .customQuery(SELECT_USER, "nickname", "dwana.turcotte")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
+
+        step("Проверить результат", () -> assertSoftly(softly -> {
+            assertThat(response.getEmail()).isEqualTo("vufirjdfxp@qtnsg.wt");
+            assertThat(response.getPassword()).isEqualTo("srdpqu");
+            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+        }));
     }
 }

@@ -17,7 +17,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DbSingleTests {
 
-    private static final String SELECT_ALL_COLUMNS = "SELECT * FROM users WHERE %s = %s";
+    private static final String SELECT_USER = "SELECT * FROM users WHERE %s = %s";
 
     private static final String INSERT_SQL_USERS = "INSERT INTO users (%s,%s,%s,%s,%s)" +
             " values (\"%s\",\"%s\",\"%s\",\"%s\",%d)";
@@ -171,5 +171,26 @@ public class DbSingleTests {
                     .execute()
                     .printResult();
         });
+    }
+
+    @Test
+    @DisplayName("Тест на проверку custom-запроса")
+    void customQueryTests() {
+        step("Сделать запрос в бд для получения записи", () -> {
+
+            response = databaseController
+                    .buildQuery(queryBuilder
+                            .customQuery(SELECT_USER, "nickname", "dwana.turcotte")
+                            .printQuery())
+                    .execute()
+                    .printResult()
+                    .extractAs(Response.class);
+        });
+
+        step("Проверить результат", () -> assertSoftly(softly -> {
+            assertThat(response.getEmail()).isEqualTo("vufirjdfxp@qtnsg.wt");
+            assertThat(response.getPassword()).isEqualTo("srdpqu");
+            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+        }));
     }
 }
