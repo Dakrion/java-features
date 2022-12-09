@@ -38,7 +38,6 @@ public class DbPoolTests {
     @Test
     @DisplayName("Тест на проверку select-запроса")
     void selectTests() {
-        System.out.println("start select");
         step("Сделать запрос в бд для получения всех записей юзеров", () -> {
             list = databaseController
                     .buildQuery(queryBuilder
@@ -83,13 +82,11 @@ public class DbPoolTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("dwana.turcotte")));
-        System.out.println("end select");
     }
 
     @Test
     @DisplayName("Тест на проверку update-запроса")
     void updateTests() {
-        System.out.println("start update");
         String email = "test123@mail.ru";
 
         step("Сделать запрос в бд для обновления записи", () -> {
@@ -125,13 +122,11 @@ public class DbPoolTests {
                             .printQuery())
                     .execute();
         });
-        System.out.println("end update");
     }
 
     @Test
     @DisplayName("Тест на проверку insert-запроса")
     void insertTests() {
-        System.out.println("start insert");
         step("Сделать запрос в бд для создания записи", () -> {
 
             databaseController
@@ -170,6 +165,5 @@ public class DbPoolTests {
                     .execute()
                     .printResult();
         });
-        System.out.println("end insert");
     }
 }
