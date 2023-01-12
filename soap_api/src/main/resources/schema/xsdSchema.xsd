@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:tns="http://speller.yandex.net/services/spellservice"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://speller.yandex.net/services/spellservice"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="CheckTextRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="text" type="xs:string" />
+            </xs:sequence>
+            <xs:attribute name="lang" type="xs:string" use="required" />
+            <xs:attribute name="options" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="format" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
