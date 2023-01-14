@@ -2,19 +2,20 @@ package dto;
 
 import annotations.*;
 
+@SoapAction("http://speller.yandex.net/services/spellservice/checkText")
 @EnvelopeProperties(namespace = "spell", namespaceURI = "http://speller.yandex.net/services/spellservice")
 public class SoapObject {
 
-    @SoapAction
-    private String soapAction;
-
-    @SoapElement(namespace = "http://speller.yandex.net/services/spellservice")
+    @SoapElement(namespace = "spell", name = "CheckTextRequest")
     @Attribute(name = "lang", value = "ru")
     @Attribute(name = "options", value = "0")
     @Attribute(name = "format", value = "")
-    private static class CheckTextRequest {
+    private Object checkTextRequest;
 
-        @ChildElement(parent = "CheckTextRequest")
-        private String text;
+    @ChildElement(parent = "CheckTextRequest")
+    private String text;
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

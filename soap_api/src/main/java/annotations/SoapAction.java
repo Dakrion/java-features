@@ -3,7 +3,9 @@ package annotations;
 import java.lang.annotation.*;
 
 @Documented
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SoapAction {
+
+    String value() default "";
 }

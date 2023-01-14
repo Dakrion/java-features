@@ -19,7 +19,6 @@ dependencies {
 
     implementation 'org.projectlombok:lombok:1.18.24'
 
-    //Owner аннотации
     implementation 'org.aeonbits.owner:owner:1.0.12'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
