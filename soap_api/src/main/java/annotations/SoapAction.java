@@ -2,6 +2,9 @@ package annotations;
 
 import java.lang.annotation.*;
 
+/**
+ * Маркер для soapAction
+ */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

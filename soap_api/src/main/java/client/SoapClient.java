@@ -8,6 +8,9 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import java.io.IOException;
 
+/**
+ * SOAP-клиент для отправки сообщений
+ */
 @SuppressWarnings("ALL")
 public class SoapClient {
 
@@ -32,6 +35,12 @@ public class SoapClient {
         soapAction = namespaceURI + "/" + serviceName;
     }
 
+    /**
+     * Создает connection и отправляет сообщение
+     * @param request
+     * @return
+     * @throws SOAPException
+     */
     public SoapClient call(SOAPMessage request) throws SOAPException {
         factory = SOAPConnectionFactory.newInstance();
         connection = factory.createConnection();
@@ -41,10 +50,20 @@ public class SoapClient {
         return this;
     }
 
+    /**
+     * Возвращает ответ
+     * @return {@link javax.xml.soap.SOAPMessage}
+     */
     public SOAPMessage getResponse() {
         return response;
     }
 
+    /**
+     * Печать ответа в консоль
+     * @return this
+     * @throws SOAPException
+     * @throws IOException
+     */
     public SoapClient printResponse() throws SOAPException, IOException {
         response.writeTo(System.out);
 

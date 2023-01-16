@@ -4,7 +4,7 @@ import annotations.*;
 
 @SoapAction("http://speller.yandex.net/services/spellservice/checkText")
 @EnvelopeProperties(namespace = "spell", namespaceURI = "http://speller.yandex.net/services/spellservice")
-public class SoapObject {
+public class CheckText {
 
     @SoapElement(namespace = "spell", name = "CheckTextRequest")
     @Attribute(name = "lang", value = "ru")
