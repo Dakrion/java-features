@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spel="http://speller.yandex.net/services/spellservice">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <spel:CheckTextRequest lang="ru" options="0" format="">
+            <spel:text>Текст для проверки</spel:text>
+        </spel:CheckTextRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

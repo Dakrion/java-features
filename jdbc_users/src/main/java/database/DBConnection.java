@@ -1,8 +1,6 @@
 package database;
 
 import config.BaseConfig;
-import database.interfaces.ConnectionPool;
-import database.interfaces.SingleConnection;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.aeonbits.owner.ConfigFactory;
@@ -20,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Slf4j
 @UtilityClass
-public class DBConnection implements SingleConnection, ConnectionPool {
+public class DBConnection {
 
     private static final BaseConfig config = ConfigFactory.newInstance()
             .create(BaseConfig.class);

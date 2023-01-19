@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <cus:CreateAgreementRequest>
+        <Environment_Code>KREDBRKMNG_TEST</Environment_Code>
+        <TT_Ext_Code>050191020181626241</TT_Ext_Code>
+        <Agent_Ext_Code>004451320751512813</Agent_Ext_Code>
+        <Chain_code>017</Chain_code>
+        <Opty_Id>OptyId</Opty_Id>
+        <Paper_Tech>PaperSigning</Paper_Tech>
+        <Delivery_Date>12/12/2019</Delivery_Date>
+    </cus:CreateAgreementRequest>
+</soapenv:Body>
+</soapenv:Envelope>
