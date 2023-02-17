@@ -254,4 +254,6 @@ public class QueryBuilder implements DDL, DML {
     public void clearQuery() {
         QUERY = new StringBuilder();
     }
+
+    //добавил комментарий
 }
