@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    autoconfigure = true
+    version = '2.21.0'
+}
+
+dependencies {
+    testImplementation 'com.codeborne:selenide:6.12.3',
+            'io.qameta.allure:allure-selenide:2.21.0',
+            'org.junit.jupiter:junit-jupiter:5.9.2',
+            'io.qameta.allure:allure-junit5:2.21.0',
+            'org.slf4j:slf4j-api:2.0.5',
+            'org.slf4j:slf4j-simple:2.0.5',
+            'org.slf4j:jul-to-slf4j:2.0.5'
+
+    implementation 'com.codeborne:selenide:6.12.3',
+            'io.qameta.allure:allure-selenide:2.21.0',
+            'org.junit.jupiter:junit-jupiter:5.9.2',
+            'org.slf4j:slf4j-api:2.0.5',
+            'org.slf4j:slf4j-simple:2.0.5',
+            'org.slf4j:jul-to-slf4j:2.0.5'
+
+    testImplementation("io.qameta.allure:allure-junit5:2.21.0") {
+        exclude group: "org.junit.jupiter-api"
+        exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter"
+    }
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+}
+test {
+    useJUnitPlatform()
+    //task для параллельного запуска тестов
+    tasks.withType(Test).configureEach {
+        systemProperties += [
+                'junit.jupiter.execution.parallel.enabled'                 : System.getenv("parallel"),
+                'junit.jupiter.execution.parallel.mode.default'            : 'concurrent',
+                'junit.jupiter.execution.parallel.mode.classes.default'    : 'concurrent',
+                'junit.jupiter.execution.parallel.config.strategy'         : 'fixed',
+                'junit.jupiter.execution.parallel.config.fixed.parallelism': 10,
+                'junit.jupiter.extensions.autodetection.enabled'           : true,
+        ]
+    }
+}
