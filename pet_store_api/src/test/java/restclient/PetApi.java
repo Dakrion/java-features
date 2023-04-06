@@ -9,7 +9,7 @@ import utils.annotations.restspec.POST;
 /**
  * Interface for api. Contains all api methods of service
  */
-@Service("PetStore Service")
+@Service(name = "PetStore Service", url = "https://petstore.swagger.io/v2")
 public interface PetApi {
 
     @GET(endpoint = "/pet/{petId}")

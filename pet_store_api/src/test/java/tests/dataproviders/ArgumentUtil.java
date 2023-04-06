@@ -19,7 +19,7 @@ public class ArgumentUtil {
     public static Stream<Arguments> getArgumentFromFile(String fileName, String classFile) {
         Stream<Arguments> argumentStream = null;
         try {
-            Object[] array = (Object[]) objectMapper.readValue(new File("src/test/resources/" + fileName), Class.forName(classFile).arrayType());
+            Object[] array = (Object[]) objectMapper.readValue(new File("src/test/resources/" + fileName), Class.forName("[L" + classFile + ";"));
             for (Object request : array) {
                 if (argumentStream == null) {
                     argumentStream = Stream.of(Arguments.of(request));

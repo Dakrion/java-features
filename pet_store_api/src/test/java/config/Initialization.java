@@ -11,16 +11,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import restclient.PetApi;
 import restclient.PetClient;
+import utils.annotations.AnnotationProcessor;
 
 import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
+import static utils.annotations.AnnotationProcessor.getServiceBaseUrl;
 
 /**
  * Base setup before run tests
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Initialization {
-
-    private final BaseConfig config = ConfigFactory.create(BaseConfig.class, System.getenv());
 
     protected PetApi petApi;
 
@@ -34,14 +34,14 @@ public class Initialization {
                 ImmutableMap.<String, String>builder()
                         .put("Version api", "v2")
                         .put("Stand", "Stage")
-                        .put("URL", config.petBaseUrl())
+                        .put("URL", getServiceBaseUrl(PetApi.class))
                         .build(),
                         "build/allure-results/");
 
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
         final RequestSpecification requestSpecification = new RequestSpecBuilder()
-                .setBaseUri(config.petBaseUrl())
+                .setBaseUri(getServiceBaseUrl(PetApi.class))
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
                 .addFilter(new AllureRestAssured())

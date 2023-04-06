@@ -1,6 +1,5 @@
 package restclient;
 
-import exceptions.AnnotationException;
 import io.qameta.allure.Step;
 import io.restassured.specification.RequestSpecification;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +9,8 @@ import utils.annotations.restspec.DELETE;
 import utils.annotations.restspec.GET;
 import utils.annotations.restspec.POST;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import static io.restassured.RestAssured.given;
+import static utils.annotations.AnnotationProcessor.validateMethod;
 
 /**
  * Service api realization
@@ -30,7 +27,7 @@ public class PetClient implements PetApi {
     public ResponseWrapper getPet(Long petId) {
             return new ResponseWrapper(given(requestSpecification)
                     .when()
-                    .get(validateAnnotation("getPet", api, GET.class, Long.class).endpoint(), petId)
+                    .get(validateMethod("getPet", api, GET.class).endpoint(), petId)
                     .thenReturn());
     }
 
@@ -40,7 +37,7 @@ public class PetClient implements PetApi {
             return new ResponseWrapper(given(requestSpecification)
                     .body(body)
                     .when()
-                    .post(validateAnnotation("createPet", api, POST.class, Object.class).endpoint())
+                    .post(validateMethod("createPet", api, POST.class).endpoint())
                     .thenReturn());
     }
 
@@ -49,29 +46,7 @@ public class PetClient implements PetApi {
     public ResponseWrapper deletePet(Long petId) {
             return new ResponseWrapper(given(requestSpecification)
                     .when()
-                    .delete(validateAnnotation("deletePet", api, DELETE.class, Long.class).endpoint(), petId)
+                    .delete(validateMethod("deletePet", api, DELETE.class).endpoint(), petId)
                     .thenReturn());
-    }
-
-    /**
-     * Method, which check the annotation for method in interface
-     *
-     * @param methodName      - name of method
-     * @param annotationClass - annotation for this method
-     * @param parameterTypes  - parameter types for method
-     * @return {@link Annotation}
-     */
-    public static <T extends Annotation> T validateAnnotation(final String methodName, final Class<?> feature,
-                                                              final Class<T> annotationClass,
-                                                              final Class<?>... parameterTypes) {
-        try {
-            Method thisMethod = feature.getDeclaredMethod(methodName, parameterTypes);
-            if (thisMethod.isAnnotationPresent(annotationClass)) {
-                return thisMethod.getAnnotation(annotationClass);
-            }
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        }
-        throw new AnnotationException("No annotation for this method!");
     }
 }

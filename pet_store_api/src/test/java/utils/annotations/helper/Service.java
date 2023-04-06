@@ -3,12 +3,21 @@ package utils.annotations.helper;
 import java.lang.annotation.*;
 
 /**
- * Name of service
+ * Marker for service class
  */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Service {
+    /**
+     * name of service
+     * @return String
+     */
+    String name();
 
-    String value();
+    /**
+     * Base url
+     * @return String
+     */
+    String url();
 }

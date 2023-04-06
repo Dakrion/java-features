@@ -19,7 +19,7 @@ public class JsonToList implements ArgumentsAggregator {
     @Override
     public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context) throws ArgumentsAggregationException {
         try {
-            return objectMapper.readValue(new File(accessor.getString(0)), Class.forName(accessor.getString(1)).arrayType());
+            return objectMapper.readValue(new File(accessor.getString(0)), Class.forName("[L" + accessor.getString(1) + ";"));
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
