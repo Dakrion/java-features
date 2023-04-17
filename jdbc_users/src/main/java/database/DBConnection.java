@@ -50,7 +50,7 @@ public class DBConnection {
      * Открывает соединение с базой данных. Перед этим закрывает старое соединение если такое есть
      *
      * @return {@link java.sql.Connection}
-     * @throws NullPointerException - при неудачной попытке соединения
+     * @throws NullPointerException  при неудачной попытке соединения
      */
     public static Connection openConnection() {
         try {

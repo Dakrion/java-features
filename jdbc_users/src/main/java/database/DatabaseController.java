@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static database.interfaces.ConnectionPool.*;
 import static database.interfaces.SingleConnection.openConnection;
@@ -84,11 +83,10 @@ public class DatabaseController {
     public DatabaseController useConnectionPool(Integer poolSize) {
         try {
             createPool(poolSize);
+            useConnectionPool = true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Can not create connection pool!\n", e);
         }
-
-        useConnectionPool = true;
 
         return this;
     }
