@@ -31,7 +31,9 @@ public class DbPoolTests {
 
     @BeforeEach
     void init() {
-        databaseController = new DatabaseController().useConnectionPool(4);
+        databaseController = new DatabaseController()
+                .useConnectionPool(4)
+                .enableLog(true);
         queryBuilder = new QueryBuilder();
     }
 
@@ -61,7 +63,7 @@ public class DbPoolTests {
                     .buildQuery(queryBuilder
                             .selectAll()
                             .from("users")
-                            .where("id = 1")
+                            .where("id = 2")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -69,9 +71,9 @@ public class DbPoolTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getId()).isEqualTo(1);
+            assertThat(response.getId()).isEqualTo(2);
             assertThat(response.is_male()).isEqualTo(false);
-            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
         }));
 
         step("Сделать запрос в бд для получения одной записи с одним полем", () -> {
@@ -79,14 +81,14 @@ public class DbPoolTests {
                     .buildQuery(queryBuilder
                             .select("nickname")
                             .from("users")
-                            .where("id = 1")
+                            .where("id = 2")
                             .printQuery())
                     .execute()
                     .printResult()
                     .extractAs(Response.class);
         });
 
-        step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("dwana.turcotte")));
+        step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("Dominik")));
     }
 
     @Test
@@ -138,7 +140,7 @@ public class DbPoolTests {
                     .buildQuery(queryBuilder
                             .insert("users")
                             .columns("nickname", "email", "password")
-                            .values("Dominik", "Dom@email.ru", "12345")
+                            .values("Dominik3", "Dom3@email.ru", "12345")
                             .printQuery())
                     .execute();
         });
@@ -148,7 +150,7 @@ public class DbPoolTests {
                     .buildQuery(queryBuilder
                             .selectAll()
                             .from("users")
-                            .where("nickname = 'Dominik'")
+                            .where("nickname = 'Dominik3'")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -156,9 +158,9 @@ public class DbPoolTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getEmail()).isEqualTo("Dom3@email.ru");
             assertThat(response.getPassword()).isEqualTo("12345");
-            assertThat(response.getNickname()).isEqualTo("Dominik");
+            assertThat(response.getNickname()).isEqualTo("Dominik3");
         }));
 
         step("Удалить созданную запись", () -> {
@@ -179,7 +181,7 @@ public class DbPoolTests {
 
             response = databaseController
                     .buildQuery(queryBuilder
-                            .customQuery(SELECT_USER, "nickname", "dwana.turcotte")
+                            .customQuery(SELECT_USER, "nickname", "Dominik")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -187,9 +189,9 @@ public class DbPoolTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getEmail()).isEqualTo("vufirjdfxp@qtnsg.wt");
-            assertThat(response.getPassword()).isEqualTo("srdpqu");
-            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getPassword()).isEqualTo("12345");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
         }));
     }
 }

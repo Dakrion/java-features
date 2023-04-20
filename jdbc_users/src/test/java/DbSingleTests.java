@@ -19,9 +19,6 @@ public class DbSingleTests {
 
     private static final String SELECT_USER = "SELECT * FROM users WHERE %s = %s";
 
-    private static final String INSERT_SQL_USERS = "INSERT INTO users (%s,%s,%s,%s,%s)" +
-            " values (\"%s\",\"%s\",\"%s\",\"%s\",%d)";
-
     private DatabaseController databaseController;
 
     private QueryBuilder queryBuilder;
@@ -32,7 +29,7 @@ public class DbSingleTests {
 
     @BeforeAll
     void init() {
-        databaseController = new DatabaseController();
+        databaseController = new DatabaseController().enableLog(true);
         queryBuilder = new QueryBuilder();
     }
 
@@ -62,7 +59,7 @@ public class DbSingleTests {
                     .buildQuery(queryBuilder
                             .selectAll()
                             .from("users")
-                            .where("id = 1")
+                            .where("id = 2")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -70,9 +67,9 @@ public class DbSingleTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getId()).isEqualTo(1);
+            assertThat(response.getId()).isEqualTo(2);
             assertThat(response.is_male()).isEqualTo(false);
-            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
         }));
 
         step("Сделать запрос в бд для получения одной записи с одним полем", () -> {
@@ -80,14 +77,14 @@ public class DbSingleTests {
                     .buildQuery(queryBuilder
                             .select("nickname")
                             .from("users")
-                            .where("id = 1")
+                            .where("id = 2")
                             .printQuery())
                     .execute()
                     .printResult()
                     .extractAs(Response.class);
         });
 
-        step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("dwana.turcotte")));
+        step("Проверить результат", () -> assertSoftly(softly -> assertThat(response.getNickname()).isEqualTo("Dominik")));
     }
 
     @Test
@@ -131,7 +128,7 @@ public class DbSingleTests {
     }
 
     @Test
-    @DisplayName("Тест на проверку insert-запроса с использованием SingleConnection")
+    @DisplayName("Тест на проверку insert-запроса")
     void insertTests() {
         step("Сделать запрос в бд для создания записи", () -> {
 
@@ -139,7 +136,7 @@ public class DbSingleTests {
                     .buildQuery(queryBuilder
                             .insert("users")
                             .columns("nickname", "email", "password")
-                            .values("Dominik", "Dom@email.ru", "12345")
+                            .values("Dominik2", "Dom2@email.ru", "12345")
                             .printQuery())
                     .execute();
         });
@@ -149,7 +146,7 @@ public class DbSingleTests {
                     .buildQuery(queryBuilder
                             .selectAll()
                             .from("users")
-                            .where("nickname = 'Dominik'")
+                            .where("nickname = 'Dominik2'")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -157,9 +154,9 @@ public class DbSingleTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getEmail()).isEqualTo("Dom2@email.ru");
             assertThat(response.getPassword()).isEqualTo("12345");
-            assertThat(response.getNickname()).isEqualTo("Dominik");
+            assertThat(response.getNickname()).isEqualTo("Dominik2");
         }));
 
         step("Удалить созданную запись", () -> {
@@ -180,7 +177,7 @@ public class DbSingleTests {
 
             response = databaseController
                     .buildQuery(queryBuilder
-                            .customQuery(SELECT_USER, "nickname", "dwana.turcotte")
+                            .customQuery(SELECT_USER, "nickname", "Dominik")
                             .printQuery())
                     .execute()
                     .printResult()
@@ -188,9 +185,9 @@ public class DbSingleTests {
         });
 
         step("Проверить результат", () -> assertSoftly(softly -> {
-            assertThat(response.getEmail()).isEqualTo("vufirjdfxp@qtnsg.wt");
-            assertThat(response.getPassword()).isEqualTo("srdpqu");
-            assertThat(response.getNickname()).isEqualTo("dwana.turcotte");
+            assertThat(response.getEmail()).isEqualTo("Dom@email.ru");
+            assertThat(response.getPassword()).isEqualTo("12345");
+            assertThat(response.getNickname()).isEqualTo("Dominik");
         }));
     }
 }
