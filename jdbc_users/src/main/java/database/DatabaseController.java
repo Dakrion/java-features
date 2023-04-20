@@ -3,6 +3,7 @@ package database;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import database.exceptions.ConvertResultException;
+import database.extensions.logging.AllureAppender;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,10 @@ public class DatabaseController {
 
     private boolean useConnectionPool = false;
 
+    private boolean attachQueryToAllure = false;
+
+    private AllureAppender appender;
+
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     /**
@@ -50,6 +55,8 @@ public class DatabaseController {
      * @return this
      */
     public synchronized DatabaseController execute() {
+        if (attachQueryToAllure) appender.log("Запрос", query);
+
         try {
             Connection connection = useConnectionPool ? getConnectionFromPool() : openConnection();
             try (Statement statement = connection.createStatement()) {
@@ -58,6 +65,7 @@ public class DatabaseController {
                 if (query.toUpperCase().startsWith("SELECT ")) {
                     rs = statement.executeQuery(query);
                     resultList = saveResult();
+                    if (attachQueryToAllure) appender.log("Результат запроса", logFormat());
                 } else {
                     resultList = null;
                     statement.executeUpdate(query);
@@ -92,21 +100,24 @@ public class DatabaseController {
     }
 
     /**
+     * Включает функцию с прикреплением аттача с запросом в Allure-отчет
+     *
+     * @param enabled флаг включения
+     * @return this
+     */
+    public DatabaseController enableLog(boolean enabled) {
+        attachQueryToAllure = enabled;
+        if (enabled) appender = new AllureAppender();
+        return this;
+    }
+
+    /**
      * Выводит результат запроса на консоль
      *
      * @return this
      */
     public DatabaseController printResult() {
-        if (resultList != null && !resultList.isEmpty()) {
-            String formatResult = resultList.toString().replace("[{", "")
-                    .replace("}]", "")
-                    .replace("}, {", "\n\n")
-                    .replace("=", " : ")
-                    .replace(", ", "\n");
-            System.out.println(formatResult);
-        } else {
-            System.out.println("No results for this query");
-        }
+        System.out.println(logFormat());
         return this;
     }
 
@@ -119,7 +130,10 @@ public class DatabaseController {
     public synchronized <T> T extractAs(Class<T> cls) {
         if (resultList.size() == 1) {
             return mapper.convertValue(resultList.get(0), cls);
-        } else
+        } else if (resultList.size() == 0)
+            throw new ConvertResultException(
+                    "Результат запроса 0 записей");
+        else
             throw new ConvertResultException(
                     "Результат запроса более 1 записи, используйте метод extractAsList() для извлечения");
     }
@@ -131,12 +145,17 @@ public class DatabaseController {
      */
     public synchronized <T> List<T> extractAsList(Class<T> cls) {
         List<T> result = new ArrayList<>();
-
-        for (Map<String, Object> obj : resultList) {
-            T value = mapper.convertValue(obj, cls);
-            result.add(value);
-        }
-        return result;
+        if (resultList.size() > 1) {
+            for (Map<String, Object> obj : resultList) {
+                T value = mapper.convertValue(obj, cls);
+                result.add(value);
+            }
+            return result;
+        } else if (resultList.size() == 0) throw new ConvertResultException(
+                "Результат запроса 0 записей");
+        else
+            throw new ConvertResultException(
+                    "Результат запроса 1 запись, используйте метод extractAs() для извлечения");
     }
 
     /**
@@ -160,5 +179,22 @@ public class DatabaseController {
             return result;
         }
         throw new NullPointerException("ResultSet is null!");
+    }
+
+    /**
+     * Преобразует результат запроса в читабельный вид
+     *
+     * @return String
+     */
+    public String logFormat() {
+        if (resultList != null && !resultList.isEmpty()) {
+            return resultList.toString().replace("[{", "")
+                    .replace("}]", "")
+                    .replace("}, {", "\n\n")
+                    .replace("=", " : ")
+                    .replace(", ", "\n");
+        } else {
+            return "No results for this query";
+        }
     }
 }
